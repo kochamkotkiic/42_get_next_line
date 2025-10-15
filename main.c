@@ -11,7 +11,6 @@ int main (int argc, char **argv)
 	if (argc >= 2)
 	{
 		fd = open(argv[1],O_RDONLY);
-		printf("%d", fd);
 	}
 	else
 		fd = 0;
@@ -22,7 +21,14 @@ int main (int argc, char **argv)
 	}
 	while ((line = get_next_line(fd)) != NULL)
 	{
-    	printf("%s", line);
+		printf("%s", line);
+		int i =0;
+		/*while(line[i])
+		{
+			if (line[i] == '\n')
+				printf("jest newl");
+			i ++;
+		}*/	
     	free(line);
 	}
 	if (fd != 0)
