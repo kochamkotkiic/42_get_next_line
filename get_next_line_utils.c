@@ -6,24 +6,11 @@
 /*   By: emurbane <emurbane@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 17:02:00 by emurbane          #+#    #+#             */
-/*   Updated: 2025/10/08 19:14:54 by emurbane         ###   ########.fr       */
+/*   Updated: 2025/10/13 17:35:43 by emurbane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-char	*ft_strchr(const char *s, int c)
-{
-	while (*s)
-	{
-		if (*s == (char)c)
-			return ((char *)s);
-		s ++;
-	}
-	if (c == '\0')
-		return ((char *)s);
-	return (NULL);
-}
 
 void	*ft_memcpy(void *dest, const void *src, size_t n)
 {
@@ -62,6 +49,8 @@ char	*ft_strdup(char *src)
 
 	len = 0;
 	i = 0;
+	if (!src)
+		return (NULL);
 	while (src[len])
 		len ++;
 	dup = (char *)malloc(sizeof(char) * (len + 1));
@@ -131,20 +120,21 @@ char *ft_strjoin_free(char *s1, const char *s2)
 	return (res);
 }
 
-int	is_valid(int fd)
-{
-	if (fd < 0)
-		return (1);
-	if (BUFFER_SIZE <= 0)
-		return (1);
-	return (0);
-}
 char	*fill_line_buffer(int fd, char *stash, char *buffer)
 {
 	int	bytes;
+	int	i;
 
-	while (!ft_strchr(stash, '\n'))
+	while (1)
 	{
+		if (stash)
+		{
+			i = 0;
+			while (stash[i] && stash[i] != '\n')
+				i++;
+			if (stash[i] == '\n')
+				break;
+		}
 		bytes = read(fd, buffer, BUFFER_SIZE);
 		if (bytes == -1)
 		{
@@ -172,7 +162,7 @@ char	*set_line(char **stash)
 		return (NULL);
 	while ((*stash)[i] && (*stash)[i] != '\n')
         i++;
-	if ((*stash[i]) == '\n')
+	if ((*stash)[i] == '\n')
 	{
 		line = ft_substr(*stash, 0 , i + 1);
 		rest = ft_substr(*stash, i + 1, ft_strlen(*stash) - (i + 1));
@@ -189,24 +179,5 @@ char	*set_line(char **stash)
 	line = ft_strdup(*stash);
 	free(*stash);
 	*stash = NULL;
-	return (line);
-}
-
-char 	*get_next_line(int fd)
-{
-	static char	*stash;
-	char	*buffer;
-	char	*line;
-
-	if (is_valid(fd) == 1)
-		return (NULL);
-	buffer = malloc(BUFFER_SIZE + 1);
-	if (!buffer)
-		return (NULL);
-	stash = fill_line_buffer(fd, stash, buffer);
-	free(buffer);
-	if (!stash)
-		return (NULL);
-	line = set_line(&stash);
 	return (line);
 }
