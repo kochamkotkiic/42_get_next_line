@@ -9,7 +9,6 @@
 /*   Updated: 2025/10/13 16:47:49 by emurbane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "get_next_line.h"
 
 char	*get_next_line(int fd)
@@ -23,10 +22,8 @@ char	*get_next_line(int fd)
 	buffer = malloc(BUFFER_SIZE + 1);
 	if (!buffer)
 		return (NULL);
-	stash = fill_line_buffer(fd, stash, buffer);
+	line = manage_stash(fd, &stash, buffer);
 	free(buffer);
-	if (!stash)
-		return (NULL);
-	line = set_line(&stash);
 	return (line);
+
 }
